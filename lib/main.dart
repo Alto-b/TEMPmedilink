@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:medilink/Admin/dashboard.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:medilink/Guest/stepper.dart';
 import 'package:medilink/model/transactions.dart';
 
 void main() async{
@@ -13,7 +14,13 @@ void main() async{
 
   Hive.registerAdapter(DeptInsAdapter());
   
-  await Hive.openBox<DeptIns>('department');
+  //await Hive.openBox('department');
+  try {
+  await Hive.openBox('department');
+  // Access your box here
+} catch (e) {
+  print('Error accessing Hive box: $e');
+}
 
   runApp(const MyApp());
 }
@@ -30,10 +37,10 @@ class MyApp extends StatelessWidget {
 
       title: 'Medilink',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 3, 160, 233)),
         useMaterial3: true,
       ),
-      home: Dashboard(),
+      home: LoadingPage(),
     );
   }
 }

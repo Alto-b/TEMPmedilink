@@ -12,17 +12,22 @@ class DepartmentPage extends StatefulWidget {
 }
 
 class _DepartmentPageState extends State<DepartmentPage> {
+
+    final _departmentController=TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+
   final List<String> departments=[];
+  final _department = Hive.box('department');
 
   @override
   void dispose(){
     //Hive.close();
-    Hive.box('departments').close();
+    Hive.box('department').close();
     super.dispose();
   }
 
-    final _departmentController=TextEditingController();
-    final _formKey = GlobalKey<FormState>();
+   
+   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,9 +65,16 @@ class _DepartmentPageState extends State<DepartmentPage> {
                   ),SizedBox(height: 20,),
                   ElevatedButton(
                       onPressed: () {
-                        addDepartment(_departmentController.text);
+                        final departmentText = _departmentController.text.trim();
+                       if (departmentText.isNotEmpty) {
+                      _addDepartment({
+                        "dept":_departmentController
+                      });
+                      _departmentController.text='';
+                        }
                       },
-                      child: Text("Add"),),
+                  child: Text("Add"),
+                ),
                   SizedBox(height: 20,),
                   ListView.builder(
                 shrinkWrap: true,
@@ -70,10 +82,12 @@ class _DepartmentPageState extends State<DepartmentPage> {
                 itemCount: departments.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    //title: Text(departments[index]),
-                    leading: Icon(Icons.abc),
-                    title: Text("data"),
+                    title: Text(departments[index]),
+                    //title: Text("data"),
                     onTap: () {
+                      
+                    },
+                    onLongPress: () {
                       
                     },
                   );
@@ -95,10 +109,14 @@ class _DepartmentPageState extends State<DepartmentPage> {
       
     );
   }
-void addDepartment(String dept){
-  setState(() {
-    departments.add(dept);
-  });
+// void addDepartment(String dept){
+//   setState(() {
+//     departments.add(dept);
+//   });
+// }
+
+Future<void> _addDepartment(Map<String,dynamic> newItem) async{
+  await _department.add(newItem);
 }
   }
   
