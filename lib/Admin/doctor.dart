@@ -3,7 +3,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:medilink/db/functions/db_functions.dart';
 
 
 class DoctorPage extends StatefulWidget {
@@ -18,13 +20,14 @@ class _DoctorPageState extends State<DoctorPage> {
     final _formkey = GlobalKey();
     final _nameController=TextEditingController();
     final _qualificationController=TextEditingController();
-    final _hospitalController=TextEditingController();
+    //final _hospitalController=TextEditingController();
 
     //for image
     File? _selectedImage;
 
     //for dropdown
-    List<String> items=['item1','item2'];
+    //List<String> dropitems=['item1','item2'];
+    List<String> dropitems=['item1','item2'];
     String? selected='item1';
 
     //for dob
@@ -32,6 +35,16 @@ class _DoctorPageState extends State<DoctorPage> {
     DateTime dob= DateTime.now();
     DateTime yop= DateTime.now();
     DateTime doj= DateTime.now();
+
+    // @override
+    // void initState(){
+    //   super.initState();
+    //   deptDropDown().then((deptDrop){
+    //     setState(() {
+    //       dropitems = deptDrop; 
+    //     });
+    //   });
+    // }
     
   @override
   Widget build(BuildContext context) {
@@ -52,7 +65,7 @@ class _DoctorPageState extends State<DoctorPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Container(
                     height: 150,
                     width: 150,
@@ -112,7 +125,7 @@ class _DoctorPageState extends State<DoctorPage> {
                 //     child: Text(items))).toList(),
                 //    onChanged:(item) =>setState(()=>selected=item) ,
                 //    )
-                 SizedBox(height: 10,),
+                 SizedBox(height: 20,),
                  //date selectors
                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,16 +180,26 @@ class _DoctorPageState extends State<DoctorPage> {
                      ),
                     
                    ],
-                 ),    
+                 ),    SizedBox(height: 20,),
                  Column(
                   children: [
                       //hospital
-                TextFormField(
-                  controller: _hospitalController,
-                  decoration: InputDecoration(
-                    hintText: "Hospital"
-                  ),
-                ),
+                // TextFormField(
+                //   controller: _hospitalController,
+                //   decoration: InputDecoration(
+                //     hintText: "Hospital"
+                //   ),
+                // ),
+
+                DropdownButtonFormField(
+                  hint: Text("Specialization"),
+                  items: dropitems.map((e) {
+                  return DropdownMenuItem(
+                    value: e,
+                    child: Text(e));
+                }).toList(), onChanged: (value) { 
+                  print(value);
+                 },)
                   ],
                  )        
 
@@ -217,4 +240,6 @@ Future<void> _pickImage() async {
       });
     }
   }
+
+ 
 }

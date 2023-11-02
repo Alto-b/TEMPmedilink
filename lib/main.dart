@@ -5,23 +5,26 @@ import 'package:medilink/Admin/dashboard.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:medilink/Guest/stepper.dart';
-import 'package:medilink/model/transactions.dart';
+import 'package:medilink/Guest/userBox.dart';
+import 'package:medilink/db/model/data_model.dart';
 
-void main() async{
+
+Future<void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
-
-  Hive.registerAdapter(DeptInsAdapter());
+  //await Hive.openBox('dept_db');
+   Hive.openBox<DepartmentModel>('dept_db');
+   Hive.openBox<UserBox>('user_db');
   
-  //await Hive.openBox('department');
-  try {
-  await Hive.openBox('department');
-  // Access your box here
-} catch (e) {
-  print('Error accessing Hive box: $e');
-}
+  if(!Hive.isAdapterRegistered(DepartmentModelAdapter().typeId)){
+      Hive.registerAdapter(DepartmentModelAdapter());
+  }
 
+  if(!Hive.isAdapterRegistered(UserBoxAdapter().typeId)){
+      Hive.registerAdapter(UserBoxAdapter());
+  }
   runApp(const MyApp());
 }
 
@@ -37,9 +40,13 @@ class MyApp extends StatelessWidget {
 
       title: 'Medilink',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 3, 160, 233)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 73, 179, 228)),
         useMaterial3: true,
+        appBarTheme: AppBarTheme(
+          elevation: 1
+        )
       ),
+      
       home: LoadingPage(),
     );
   }
